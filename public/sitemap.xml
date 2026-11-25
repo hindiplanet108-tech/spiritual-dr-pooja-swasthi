@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <!-- Note: Live deployments serve /sitemap.xml dynamically via server.ts using APP_URL / request host -->
+  <url>
+    <loc>https://ais-pre-nlqo2str7nscfkjk6osns7-729015245670.asia-east1.run.app/</loc>
+    <lastmod>2026-11-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ais-pre-nlqo2str7nscfkjk6osns7-729015245670.asia-east1.run.app/" />
+    <xhtml:link rel="alternate" hreflang="hi" href="https://ais-pre-nlqo2str7nscfkjk6osns7-729015245670.asia-east1.run.app/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ais-pre-nlqo2str7nscfkjk6osns7-729015245670.asia-east1.run.app/" />
+    <image:image>
+      <image:loc>https://ais-pre-nlqo2str7nscfkjk6osns7-729015245670.asia-east1.run.app/assets/aistudio/28_91acc32c.jpeg</image:loc>
+      <image:title>Dr. Pooja Awasthi — Vedic Numerologist &amp; Spiritual Guide</image:title>
+      <image:caption>Gold Medalist Spiritual Mentor, Tarot Reader &amp; Chakra Healer</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://ais-pre-nlqo2str7nscfkjk6osns7-729015245670.asia-east1.run.app/tariff</loc>
+    <lastmod>2026-11-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <url>
+    <loc>https://ais-pre-nlqo2str7nscfkjk6osns7-729015245670.asia-east1.run.app/reviews</loc>
+    <lastmod>2026-11-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.90</priority>
+  </url>
+
+  <url>
+    <loc>https://ais-pre-nlqo2str7nscfkjk6osns7-729015245670.asia-east1.run.app/pages/kundali-analysis</loc>
+    <lastmod>2026-11-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://ais-pre-nlqo2str7nscfkjk6osns7-729015245670.asia-east1.run.app/pages/rudraksha-ratna-therapy</loc>
+    <lastmod>2026-11-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://ais-pre-nlqo2str7nscfkjk6osns7-729015245670.asia-east1.run.app/pages/vastu-aura-cleansing</loc>
+    <lastmod>2026-11-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+</urlset>

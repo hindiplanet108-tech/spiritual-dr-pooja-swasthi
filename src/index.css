@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-canvas: #FAF8F5;
+    --color-surface: #FFFFFF;
+    --color-muted: #F4F0FA;
+    --color-champagne: #F5F1E9;
+    --color-midnight: #1E162B;
+    --color-amethyst: #522B8A;
+    --color-gold: #B48228;
+    --color-gold-light: #E8D5AA;
+    --color-ivory: #FAF8F5;
+    --color-lavender: #EAE2F4;
+    --color-charcoal: #1E162B;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  body {
+    background-color: #FAF8F5;
+    color: #1E162B;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+}
+
+.font-cinzel {
+  font-family: 'Cinzel', Georgia, serif;
+}
+
+.font-cormorant {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+.font-sans {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+/* Dedicated High-Definition Rupee & Currency Typography */
+.font-rupee,
+.currency-amount {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-feature-settings: "tnum" 1, "cv01" 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.rupee-symbol {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-weight: 900;
+  display: inline-block;
+  line-height: 1;
+}
+
+/* Editorial Luxury Light Accents */
+.gold-glow {
+  box-shadow: 0 12px 32px -8px rgba(180, 130, 40, 0.16);
+}
+
+.gold-border {
+  border-color: rgba(180, 130, 40, 0.35);
+}
+
+.gallery-frame {
+  background-color: #FFFFFF;
+  border: 1px solid #E6DFD3;
+  box-shadow: 0 10px 30px -10px rgba(30, 22, 43, 0.08);
+}
+
+@media print {
+  header,
+  footer,
+  .fixed {
+    display: none !important;
+  }
+}
