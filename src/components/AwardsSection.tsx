@@ -1,16 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AWARDS_DATA, AwardItem } from '../data/awardsData';
 import {
   Award,
   Trophy,
   ExternalLink,
   X,
-  Upload,
   Camera,
-  Sparkles,
   CheckCircle2,
-  FolderHeart,
-  Info,
   MapPin,
   Users
 } from 'lucide-react';
@@ -23,12 +19,9 @@ interface AwardsSectionProps {
 }
 
 export const AwardsSection: React.FC<AwardsSectionProps> = ({ lang }) => {
-  const [activeGroup, setActiveGroup] = useState<string>('all');
   const [selectedAward, setSelectedAward] = useState<AwardItem | null>(null);
   const [customPhotos, setCustomPhotos] = useState<Record<string, string>>({});
   const [bulkUploadMsg, setBulkUploadMsg] = useState<string | null>(null);
-  const [showGuideBanner, setShowGuideBanner] = useState<boolean>(true);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const t = getTranslation(lang);
 
   useEffect(() => {
@@ -54,111 +47,6 @@ export const AwardsSection: React.FC<AwardsSectionProps> = ({ lang }) => {
     };
     reader.readAsDataURL(file);
   };
-
-  const handleBulkUpload = async (files: FileList | null) => {
-    if (!files || files.length === 0) return;
-
-    let matchedCount = 0;
-    const newPhotos: Record<string, string> = {};
-
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const fileNameLower = file.name.toLowerCase();
-
-      const matchedAward = AWARDS_DATA.find((award) => {
-        const awardFileLower = award.filename.toLowerCase();
-        if (awardFileLower === fileNameLower) return true;
-        
-        const cleanA = awardFileLower.replace(/[^a-z0-9]/g, '');
-        const cleanB = fileNameLower.replace(/[^a-z0-9]/g, '');
-        if (cleanA && cleanB && (cleanA === cleanB || cleanA.includes(cleanB) || cleanB.includes(cleanA))) {
-          return true;
-        }
-
-        if (fileNameLower.includes('immt-6') && award.id === 'iimt-1') return true;
-        if (fileNameLower.includes('immt-5') && award.id === 'iimt-2') return true;
-        if (fileNameLower.includes('immt-3') && award.id === 'iimt-5') return true;
-        if (fileNameLower.includes('immt-4') && award.id === 'iimt-6') return true;
-        if (fileNameLower.includes('immt-2') && award.id === 'iimt-4') return true;
-        if (fileNameLower.includes('immt') && award.id === 'iimt-3') return true;
-
-        if (fileNameLower.includes('lucknow mahopadhyay award-7') && award.id === 'lucknow-1') return true;
-
-        if (fileNameLower.includes('शीर्ष 10') && award.id === 'ujjain-1') return true;
-        if (fileNameLower.includes('इंदौर 2026 - 1') && award.id === 'ujjain-2') return true;
-        if (fileNameLower.includes('इंदौर 2026 - 2') && award.id === 'ujjain-3') return true;
-        if (fileNameLower.includes('इंदौर 2026 - 3') && award.id === 'ujjain-4') return true;
-        if (fileNameLower.includes('इंदौर 2026 - 4') && award.id === 'ujjain-5') return true;
-        if (fileNameLower.includes('इंदौर 2026 - 5') && award.id === 'ujjain-6') return true;
-        if (fileNameLower.includes('इंदौर 2026 - 6') && award.id === 'ujjain-7') return true;
-        if (fileNameLower.includes('दिनेश') && fileNameLower.includes('-3') && award.id === 'ujjain-8') return true;
-        if (fileNameLower.includes('दिनेश') && (fileNameLower.includes('1') || fileNameLower.includes('-2')) && award.id === 'ujjain-9') return true;
-
-        if (fileNameLower.includes('गुरुमीत') && fileNameLower.includes('-5') && award.id === 'gov-1') return true;
-        if (fileNameLower.includes('गुरुमीत') && fileNameLower.includes('-2') && award.id === 'gov-2') return true;
-        if (fileNameLower.includes('गुरुमीत') && fileNameLower.includes('-3') && award.id === 'gov-3') return true;
-        if (fileNameLower.includes('गुरुमीत') && fileNameLower.includes('-1') && award.id === 'gov-4') return true;
-        if (fileNameLower.includes('गुरुमीत') && fileNameLower.includes('-4') && award.id === 'gov-5') return true;
-
-        if (fileNameLower.includes('चंद्रमौली') && fileNameLower.includes('-7') && award.id === 'bhu-1') return true;
-        if (fileNameLower.includes('चंद्रमौली') && fileNameLower.includes('-4') && award.id === 'bhu-2') return true;
-        if (fileNameLower.includes('pooja.jpg') && award.id === 'portrait-1') return true;
-
-        return false;
-      });
-
-      if (matchedAward) {
-        await new Promise<void>((resolve) => {
-          const reader = new FileReader();
-          reader.onload = async (e) => {
-            const dataUrl = e.target?.result as string;
-            if (dataUrl) {
-              await saveStoredMedia(`award_${matchedAward.id}`, dataUrl);
-              newPhotos[matchedAward.id] = dataUrl;
-              matchedCount++;
-            }
-            resolve();
-          };
-          reader.readAsDataURL(file);
-        });
-      }
-    }
-
-    if (matchedCount > 0) {
-      setCustomPhotos((prev) => ({ ...prev, ...newPhotos }));
-      setBulkUploadMsg(
-        lang === 'hi'
-          ? `शानदार! ${matchedCount} तस्वीरें सफलतापूर्वक पहचानी गईं और वेबसाइट पर सुरक्षित हो गईं।`
-          : `Success! ${matchedCount} photos matched and securely updated on the website.`
-      );
-    } else {
-      setBulkUploadMsg(
-        lang === 'hi'
-          ? `अपलोड की गई फ़ाइलें सुरक्षित कर ली गईं।`
-          : `Uploaded files processed.`
-      );
-    }
-
-    setTimeout(() => setBulkUploadMsg(null), 6000);
-  };
-
-  const filteredAwards = AWARDS_DATA.filter((item) => {
-    if (activeGroup === 'all') return true;
-    return item.eventGroup === activeGroup;
-  });
-
-  const countByGroup = (group: AwardItem['eventGroup']) =>
-    AWARDS_DATA.filter((a) => a.eventGroup === group).length;
-
-  const EVENT_GROUP_TABS = [
-    { id: 'all', label_en: `All ${AWARDS_DATA.length} Honors`, label_hi: `सभी ${AWARDS_DATA.length} सम्मान व चित्र`, count: AWARDS_DATA.length },
-    { id: 'iimt_meerut', label_en: 'IIMT Univ. Meerut', label_hi: 'आईआईएमटी वि.वि. मेरठ', count: countByGroup('iimt_meerut') },
-    { id: 'lucknow', label_en: 'Lucknow Conclave', label_hi: 'राष्ट्रीय सम्मेलन लखनऊ', count: countByGroup('lucknow') },
-    { id: 'ujjain_indore', label_en: 'Ujjain & Indore', label_hi: 'महाकाल उज्जैन व इन्दौर', count: countByGroup('ujjain_indore') },
-    { id: 'uttarakhand_governor', label_en: 'Uttarakhand Governor', label_hi: 'उत्तराखंड राजभवन', count: countByGroup('uttarakhand_governor') },
-    { id: 'bhu_varanasi', label_en: 'BHU Varanasi', label_hi: 'बीएचयू वाराणसी', count: countByGroup('bhu_varanasi') },
-    { id: 'portraits', label_en: 'Profile Portraits', label_hi: 'व्यक्तित्व चित्र', count: countByGroup('portraits') },
-  ].filter((tab) => tab.count > 0);
 
   return (
     <section id="honors" className="py-12 md:py-16 bg-white text-[#1E162B] relative overflow-hidden border-t border-[#E5DFD5]">
@@ -191,53 +79,6 @@ export const AwardsSection: React.FC<AwardsSectionProps> = ({ lang }) => {
           </p>
         </div>
 
-        {/* Guide Banner */}
-        {showGuideBanner && (
-          <div className="mb-6 p-4 rounded-2xl bg-[#FAF8F5] border border-[#DEC38C] shadow-xs relative flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#FBF5E6] border border-[#DEC38C] flex items-center justify-center shrink-0 text-[#B48228] mt-0.5">
-                <Info size={20} />
-              </div>
-              <div className="space-y-1">
-                <h4 className="font-cinzel text-sm sm:text-base font-bold text-[#1E162B] flex items-center gap-2">
-                  <span>{lang === 'hi' ? 'समारोहों की तस्वीरें व सम्मान यहां देखें' : 'Where Are These Images Listed on the Website?'}</span>
-                  <span className="text-[11px] px-2 py-0.5 rounded-md bg-[#F4F0FA] text-[#522B8A] font-mono border border-[#DFD5F0]">
-                    #honors
-                  </span>
-                </h4>
-                <p className="text-xs text-[#4A4356] leading-relaxed max-w-3xl">
-                  {lang === 'hi'
-                    ? `आपकी सभी ${AWARDS_DATA.length} तस्वीरें और सम्मान इसी सेक्शन (#honors) में मुख्य कार्यक्रमों के अनुसार दिए गए हैं। किसी भी फोटो पर क्लिक करके बड़ी तस्वीर और पूरी जानकारी देखें।`
-                    : `All ${AWARDS_DATA.length} verified photos and honors are categorized right here in #honors across major event groups. Click any card to inspect full high-resolution citations.`}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 shrink-0 self-end md:self-center">
-              <label className="cursor-pointer inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-[#522B8A] hover:bg-[#412070] text-white text-xs font-bold shadow-xs transition-all">
-                <Upload size={14} />
-                <span>{lang === 'hi' ? `सभी ${AWARDS_DATA.length} चित्र अपलोड करें` : 'Upload All Photos'}</span>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  onChange={(e) => handleBulkUpload(e.target.files)}
-                  className="hidden"
-                />
-              </label>
-              <button
-                type="button"
-                onClick={() => setShowGuideBanner(false)}
-                className="p-2 rounded-lg bg-white hover:bg-[#F4F0FA] text-[#5D556A] hover:text-[#1E162B] border border-[#E6DFD3] cursor-pointer"
-                title="Dismiss"
-              >
-                <X size={16} />
-              </button>
-            </div>
-          </div>
-        )}
-
         {bulkUploadMsg && (
           <div className="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 flex items-center gap-3 shadow-xs">
             <CheckCircle2 size={18} className="text-emerald-700 shrink-0" />
@@ -245,136 +86,9 @@ export const AwardsSection: React.FC<AwardsSectionProps> = ({ lang }) => {
           </div>
         )}
 
-        {/* TOP HONOREE SPOTLIGHT CARDS */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-          
-          {/* Spotlight 1 */}
-          <div 
-            onClick={() => {
-              const iimtAward = AWARDS_DATA.find((a) => a.id === 'iimt-1') || AWARDS_DATA[0];
-              setSelectedAward(iimtAward);
-            }}
-            className="p-5 sm:p-6 rounded-2xl bg-[#FAF8F5] border border-[#DEC38C] flex flex-col sm:flex-row items-center gap-5 shadow-sm hover:shadow-xl group cursor-pointer hover:bg-[#FBF5E6]/50 transition-all"
-          >
-            <div className="w-28 h-36 sm:w-32 sm:h-40 rounded-xl overflow-hidden border border-[#E6DFD3] bg-white p-1.5 shrink-0 shadow-md">
-              <img
-                src={customPhotos['iimt-1'] || "/assets/awards/IMMT-6.jpeg"}
-                alt="आईआईएमटी विश्वविद्यालय मेरठ - लाइफटाइम अचीवमेंट सम्मान प्रशस्ति पत्र"
-                className="w-full h-full object-cover object-top rounded-lg group-hover:scale-105 transition-transform duration-300"
-                onError={(e) => {
-                  const target = e.currentTarget;
-                  if (target.src !== '/IMMT-6.jpeg') target.src = '/IMMT-6.jpeg';
-                }}
-              />
-            </div>
-            <div className="space-y-1.5 text-center sm:text-left flex-1">
-              <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-white border border-[#DEC38C] text-[#7A5311] text-[10px] font-bold">
-                <Sparkles size={10} className="text-[#B48228]" />
-                <span>{lang === 'hi' ? 'लाइफटाइम अचीवमेंट सम्मान (प्रशस्ति पत्र)' : 'Lifetime Achievement Award Citation'}</span>
-              </div>
-              <h3 className="font-cinzel text-base sm:text-lg font-bold text-[#1E162B] group-hover:text-[#522B8A] transition-colors">
-                {lang === 'hi' ? 'आईआईएमटी विश्वविद्यालय, मेरठ' : 'IIMT University, Meerut'}
-              </h3>
-              <p className="text-xs font-semibold text-[#7A5311]">
-                {lang === 'hi'
-                  ? 'परम पूज्य जैनाचार्य 108 श्री सौरभ सागर जी महाराज के सानिध्य में सम्मानित'
-                  : 'In presence of Param Pujya Jainacharya 108 Sourabh Sagar Ji Maharaj'}
-              </p>
-              <p className="text-[11px] text-[#4A4356] line-clamp-2">
-                {lang === 'hi'
-                  ? 'ज्योतिष शास्त्र एवं भारतीय ज्ञान परंपरा (IKS) में आजीवन योगदान हेतु प्रशस्ति पत्र एवं स्वर्ण शील्ड से अलंकृत।'
-                  : 'Conferred for distinguished lifelong contribution to Jyotish Shastra and Indian Knowledge System.'}
-              </p>
-              <div className="pt-1 flex items-center justify-center sm:justify-start gap-1 text-[11px] text-[#522B8A] font-bold">
-                <span>{lang === 'hi' ? 'प्रशस्ति पत्र व विवरण देखें →' : 'View Full Citation & Certificate →'}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Spotlight 2 */}
-          <div 
-            onClick={() => {
-              const govAward = AWARDS_DATA.find((a) => a.id === 'gov-1') || null;
-              if (govAward) setSelectedAward(govAward);
-            }}
-            className="p-5 sm:p-6 rounded-2xl bg-[#FAF8F5] border border-[#DEC38C] flex flex-col sm:flex-row items-center gap-5 shadow-sm hover:shadow-xl group cursor-pointer hover:bg-[#FBF5E6]/50 transition-all"
-          >
-            <div className="w-28 h-36 sm:w-32 sm:h-40 rounded-xl overflow-hidden border border-[#E6DFD3] bg-white p-1.5 shrink-0 shadow-md">
-              <img
-                src={customPhotos['gov-1'] || "/assets/awards/uttarakhand_governor_gurmeet_singh_award.jpeg"}
-                alt="उत्तराखंड के माननीय राज्यपाल ले. ज. गुरमीत सिंह द्वारा सम्मानित"
-                className="w-full h-full object-cover object-top rounded-lg group-hover:scale-105 transition-transform duration-300"
-                onError={(e) => {
-                  const target = e.currentTarget;
-                  if (target.src !== '/uttarakhand_governor_gurmeet_singh_award.jpeg') target.src = '/uttarakhand_governor_gurmeet_singh_award.jpeg';
-                }}
-              />
-            </div>
-            <div className="space-y-1.5 text-center sm:text-left flex-1">
-              <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-white border border-[#DEC38C] text-[#7A5311] text-[10px] font-bold">
-                <Sparkles size={10} className="text-[#B48228]" />
-                <span>{lang === 'hi' ? 'विशेष राजकीय मंच सम्मान' : 'Featured State Honor'}</span>
-              </div>
-              <h3 className="font-cinzel text-base sm:text-lg font-bold text-[#1E162B] group-hover:text-[#522B8A] transition-colors">
-                {lang === 'hi' ? 'अमर उजाला ज्योतिष महाकुंभ 2026' : 'Amar Ujala Jyotish Mahakumbh 2026'}
-              </h3>
-              <p className="text-xs font-semibold text-[#7A5311]">
-                {lang === 'hi'
-                  ? 'उत्तराखंड के माननीय राज्यपाल ले. ज. गुरमीत सिंह द्वारा सम्मानित'
-                  : 'Honored by Hon. Governor of Uttarakhand Lt. Gen. Gurmeet Singh'}
-              </p>
-              <p className="text-[11px] text-[#4A4356] line-clamp-2">
-                {lang === 'hi'
-                  ? 'ग्राफिक एरा विश्वविद्यालय, देहरादून के मंच पर माननीय राज्यपाल द्वारा विशेष सम्मान व शील्ड अर्पण।'
-                  : 'Conferred on stage at Graphic Era University, Dehradun in recognition of Vedic scholarship and guidance.'}
-              </p>
-              <div className="pt-1 flex items-center justify-center sm:justify-start gap-1 text-[11px] text-[#522B8A] font-bold">
-                <span>{lang === 'hi' ? 'सम्मान विवरण देखें →' : 'View Full Details →'}</span>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        {/* EVENT GROUP FILTER TABS */}
-        <div className="space-y-3 mb-10">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#522B8A] uppercase tracking-wider flex items-center gap-1.5">
-              <FolderHeart size={14} className="text-[#B48228]" />
-              <span>{lang === 'hi' ? 'समारोह अनुसार तस्वीरें देखें:' : 'Filter by Landmark Conclave / Event:'}</span>
-            </span>
-            <span className="text-xs font-semibold text-[#5D556A]">
-              {filteredAwards.length} {lang === 'hi' ? 'सम्मान' : 'items'}
-            </span>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            {EVENT_GROUP_TABS.map((tab) => {
-              const isActive = activeGroup === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setActiveGroup(tab.id)}
-                  className={`px-3.5 py-2 text-xs font-semibold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
-                    isActive
-                      ? 'bg-[#522B8A] text-white shadow-sm font-bold'
-                      : 'bg-[#FAF8F5] hover:bg-[#F4F0FA] text-[#4A4356] border border-[#E6DFD3]'
-                  }`}
-                >
-                  <span>{lang === 'hi' ? tab.label_hi : tab.label_en}</span>
-                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${isActive ? 'bg-white/20 text-white' : 'bg-white text-[#522B8A] border border-[#E6DFD3]'}`}>
-                    {tab.count}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* 40+ AWARDS MUSEUM GALLERY GRID */}
+        {/* AWARDS MUSEUM GALLERY GRID */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredAwards.map((award, index) => {
+          {AWARDS_DATA.map((award, index) => {
             const currentImg = customPhotos[award.id] || award.imageUrl;
 
             return (
